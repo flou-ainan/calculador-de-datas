@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Data</title>
+    <!-- Tailwind CSS CDN - Carregado ANTES do seu CSS personalizado -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -24,10 +25,10 @@
             padding: 2.5rem; /* Aumentado o padding */
             border-radius: 1rem; /* Cantos mais arredondados */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada */
-            max-width: 500px;
-            width: 100%;
+            width: 100%; /* Começa com 100% de largura para mobile */
             text-align: center;
             flex-grow: 1; /* Permite que os cards cresçam para preencher o espaço disponível */
+            /* Removido o max-width inicial para evitar conflitos */
         }
         h1 {
             color: #2c3e50; /* Cor do título */
@@ -101,12 +102,12 @@
         /* Media queries para responsividade */
         @media (min-width: 768px) {
             .container {
-                max-width: 45%; /* Permite dois cards lado a lado em telas maiores */
+                max-width: 45% !important; /* Permite dois cards lado a lado em telas maiores */
             }
         }
         @media (min-width: 1024px) {
             .container {
-                max-width: 400px; /* Limita a largura em telas muito grandes */
+                max-width: 400px !important; /* Limita a largura em telas muito grandes */
             }
         }
     </style>
