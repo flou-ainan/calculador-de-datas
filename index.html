@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Cor de fundo suave */
+            display: flex;
+            flex-wrap: wrap; /* Permite que os cards quebrem para a próxima linha em telas menores */
+            justify-content: center;
+            align-items: flex-start; /* Alinha os itens ao topo para melhor layout */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            gap: 30px; /* Espaçamento entre os cards */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Aumentado o padding */
+            border-radius: 1rem; /* Cantos mais arredondados */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada */
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            flex-grow: 1; /* Permite que os cards cresçam para preencher o espaço disponível */
+        }
+        h1 {
+            color: #2c3e50; /* Cor do título */
+            margin-bottom: 1.5rem;
+            font-size: 2.25rem; /* Tamanho maior para o título */
+            font-weight: 700; /* Negrito */
+        }
+        .input-group {
+            margin-bottom: 1.25rem; /* Espaçamento entre grupos de input */
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e; /* Cor do label */
+            font-weight: 600; /* Seminegrito */
+        }
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem; /* Padding maior nos inputs */
+            border: 1px solid #cbd5e0; /* Borda suave */
+            border-radius: 0.5rem; /* Cantos arredondados */
+            font-size: 1rem;
+            color: #2c3e50;
+            box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+        }
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6; /* Cor da borda ao focar */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* Sombra ao focar */
+        }
+        button {
+            background-color: #3b82f6; /* Cor primária do botão */
+            color: white;
+            padding: 0.85rem 1.5rem; /* Padding maior no botão */
+            border: none;
+            border-radius: 0.75rem; /* Cantos arredondados */
+            font-size: 1.1rem; /* Tamanho da fonte do botão */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #2563eb; /* Cor mais escura ao passar o mouse */
+            transform: translateY(-2px); /* Efeito de "levantar" */
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        .resultado-display { /* Classe genérica para resultados */
+            margin-top: 1.75rem; /* Espaçamento maior para o resultado */
+            font-size: 1.25rem; /* Tamanho da fonte do resultado */
+            color: #1a202c; /* Cor do texto do resultado */
+            font-weight: 700;
+        }
+        .resultado-dias-corridos,
+        .resultado-meses-corridos { /* Estilo específico para dias e meses corridos */
+            font-size: 1rem; /* Um pouco menor */
+            margin-top: 0.75rem; /* Menos espaçamento */
+            color: #4a5568; /* Cor mais suave */
+            font-weight: 600;
+        }
+        .error-message {
+            color: #ef4444; /* Cor vermelha para mensagens de erro */
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Media queries para responsividade */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 45%; /* Permite dois cards lado a lado em telas maiores */
+            }
+        }
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 400px; /* Limita a largura em telas muito grandes */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Card 1: Adicionar Período à Data -->
+    <div class="container">
+        <h1>Adicionar Período à Data</h1>
+        <div class="input-group">
+            <label for="dataInicialAdicao">Data Inicial:</label>
+            <input type="date" id="dataInicialAdicao" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="input-group">
+            <label for="anosParaAdicionar">Anos para Adicionar:</label>
+            <input type="number" id="anosParaAdicionar" value="0" min="0" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="input-group">
+            <label for="mesesParaAdicionar">Meses para Adicionar:</label>
+            <input type="number" id="mesesParaAdicionar" value="0" min="0" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="input-group">
+            <label for="diasParaAdicionar">Dias para Adicionar:</label>
+            <input type="number" id="diasParaAdicionar" value="0" min="0" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <button onclick="adicionarPeriodo()" class="rounded-lg p-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-300">Calcular Nova Data</button>
+        <div id="resultadoAdicao" class="resultado-display"></div>
+        <div id="errorMessageAdicao" class="error-message"></div>
+    </div>
+
+    <!-- Card 2: Diferença entre Datas -->
+    <div class="container">
+        <h1>Diferença entre Datas</h1>
+        <div class="input-group">
+            <label for="dataInicioIntervalo">Data de Início:</label>
+            <input type="date" id="dataInicioIntervalo" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="input-group">
+            <label for="dataFimIntervalo">Data Final:</label>
+            <input type="date" id="dataFimIntervalo" class="rounded-lg p-3 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <button onclick="calcularDiferencaDatas()" class="rounded-lg p-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition duration-300">Calcular Diferença</button>
+        <div id="resultadoAnosMesesDias" class="resultado-display"></div> <!-- Elemento para anos, meses e dias -->
+        <div id="resultadoMesesCorridos" class="resultado-meses-corridos"></div> <!-- Novo elemento para meses corridos -->
+        <div id="resultadoDiasCorridos" class="resultado-dias-corridos"></div> <!-- Elemento para dias corridos com estilo ajustado -->
+        <div id="errorMessageDiferenca" class="error-message"></div>
+    </div>
+
+    <script>
+        /**
+         * Calculates the new date after adding a period (years, months, and days).
+         */
+        function adicionarPeriodo() {
+            const dataInicialInput = document.getElementById('dataInicialAdicao');
+            const anosParaAdicionarInput = document.getElementById('anosParaAdicionar');
+            const mesesParaAdicionarInput = document.getElementById('mesesParaAdicionar');
+            const diasParaAdicionarInput = document.getElementById('diasParaAdicionar');
+            const resultadoDiv = document.getElementById('resultadoAdicao');
+            const errorMessageDiv = document.getElementById('errorMessageAdicao');
+
+            // Clears previous error messages
+            errorMessageDiv.textContent = '';
+            resultadoDiv.textContent = '';
+
+            const dataInicialStr = dataInicialInput.value;
+            const anosParaAdicionar = parseInt(anosParaAdicionarInput.value);
+            const mesesParaAdicionar = parseInt(mesesParaAdicionarInput.value);
+            const diasParaAdicionar = parseInt(diasParaAdicionarInput.value);
+
+            if (!dataInicialStr) {
+                errorMessageDiv.textContent = 'Por favor, selecione uma data inicial.';
+                return;
+            }
+
+            if (isNaN(anosParaAdicionar) || anosParaAdicionar < 0 ||
+                isNaN(mesesParaAdicionar) || mesesParaAdicionar < 0 ||
+                isNaN(diasParaAdicionar) || diasParaAdicionar < 0) {
+                errorMessageDiv.textContent = 'Por favor, insira números válidos e não negativos para anos, meses e dias.';
+                return;
+            }
+
+            // Creates a Date object from the date string (YYYY-MM-DD)
+            // It's important to parse manually to avoid timezone inconsistencies
+            const [ano, mes, dia] = dataInicialStr.split('-').map(Number);
+            const data = new Date(ano, mes - 1, dia); // Month is 0-indexed in Date object
+
+            // Adds the period (years, then months, then days)
+            data.setFullYear(data.getFullYear() + anosParaAdicionar);
+            data.setMonth(data.getMonth() + mesesParaAdicionar);
+            data.setDate(data.getDate() + diasParaAdicionar);
+
+            // Formats the resulting date for display (DD/MM/AAAA)
+            const diaNovo = String(data.getDate()).padStart(2, '0');
+            const mesNovo = String(data.getMonth() + 1).padStart(2, '0'); // Month becomes 1-indexed again
+            const anoNovo = data.getFullYear();
+
+            resultadoDiv.textContent = `A nova data é: ${diaNovo}/${mesNovo}/${anoNovo}`;
+        }
+
+        /**
+         * Calculates the difference in years, months, and days between two dates,
+         * and also the total elapsed months and days.
+         */
+        function calcularDiferencaDatas() {
+            const dataInicioIntervaloInput = document.getElementById('dataInicioIntervalo');
+            const dataFimIntervaloInput = document.getElementById('dataFimIntervalo');
+            const resultadoAnosMesesDiasDiv = document.getElementById('resultadoAnosMesesDias');
+            const resultadoMesesCorridosDiv = document.getElementById('resultadoMesesCorridos');
+            const resultadoDiasCorridosDiv = document.getElementById('resultadoDiasCorridos');
+            const errorMessageDiv = document.getElementById('errorMessageDiferenca');
+
+            // Clears previous error messages
+            errorMessageDiv.textContent = '';
+            resultadoAnosMesesDiasDiv.textContent = '';
+            resultadoMesesCorridosDiv.textContent = '';
+            resultadoDiasCorridosDiv.textContent = '';
+
+            const dataInicioStr = dataInicioIntervaloInput.value;
+            const dataFimStr = dataFimIntervaloInput.value;
+
+            if (!dataInicioStr || !dataFimStr) {
+                errorMessageDiv.textContent = 'Por favor, selecione ambas as datas para o intervalo.';
+                return;
+            }
+
+            // Creates Date objects from the date strings
+            const [ano1, mes1, dia1] = dataInicioStr.split('-').map(Number);
+            const dataInicio = new Date(ano1, mes1 - 1, dia1);
+
+            const [ano2, mes2, dia2] = dataFimStr.split('-').map(Number);
+            const dataFim = new Date(ano2, mes2 - 1, dia2);
+
+            // Ensures that the start date is not after the end date
+            if (dataInicio > dataFim) {
+                errorMessageDiv.textContent = 'A data de início não pode ser posterior à data final.';
+                return;
+            }
+
+            // Calculate difference in years, months, and days
+            let anos = dataFim.getFullYear() - dataInicio.getFullYear();
+            let meses = dataFim.getMonth() - dataInicio.getMonth();
+            let dias = dataFim.getDate() - dataInicio.getDate();
+
+            // Adjust days if negative
+            if (dias < 0) {
+                meses--;
+                // Get the number of days in the month prior to the end date
+                // new Date(year, month, 0) returns the last day of the previous month
+                const diasNoMesAnterior = new Date(dataFim.getFullYear(), dataFim.getMonth(), 0).getDate();
+                dias += diasNoMesAnterior;
+            }
+
+            // Adjust months if negative
+            if (meses < 0) {
+                anos--;
+                meses += 12;
+            }
+
+            // Construct the display string for years, months, and days
+            let diferencaTexto = '';
+            if (anos > 0) {
+                diferencaTexto += `${anos} ano${anos > 1 ? 's' : ''}`;
+            }
+            if (meses > 0) {
+                if (diferencaTexto !== '') diferencaTexto += ', ';
+                diferencaTexto += `${meses} mês${meses > 1 ? 'es' : ''}`;
+            }
+            if (dias > 0) {
+                if (diferencaTexto !== '') diferencaTexto += ' e ';
+                diferencaTexto += `${dias} dia${dias > 1 ? 's' : ''}`;
+            }
+
+            if (diferencaTexto === '' && dataInicio.getTime() === dataFim.getTime()) {
+                diferencaTexto = 'Mesmo dia!';
+            } else if (diferencaTexto === '') {
+                // Should not happen if dataInicio <= dataFim and not same day
+                diferencaTexto = 'Nenhuma diferença significativa.';
+            }
+
+            resultadoAnosMesesDiasDiv.textContent = `Diferença: ${diferencaTexto}`;
+
+            // Calculate total elapsed months
+            const totalMesesCorridos = (dataFim.getFullYear() - dataInicio.getFullYear()) * 12 + (dataFim.getMonth() - dataInicio.getMonth());
+            resultadoMesesCorridosDiv.textContent = `Total de meses corridos: ${totalMesesCorridos} mês${totalMesesCorridos !== 1 ? 'es' : ''}`;
+
+            // Calculate total elapsed days
+            const umDiaEmMs = 1000 * 60 * 60 * 24; // Milliseconds in one day
+            const diferencaMs = dataFim.getTime() - dataInicio.getTime();
+            const diasCorridos = Math.round(diferencaMs / umDiaEmMs); // Rounds to handle time zones/DST
+
+            resultadoDiasCorridosDiv.textContent = `Total de dias corridos: ${diasCorridos} dia${diasCorridos !== 1 ? 's' : ''}`;
+        }
+    </script>
+</body>
+</html>
